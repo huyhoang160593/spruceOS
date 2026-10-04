@@ -13,6 +13,8 @@ AGENTS.md
 CLAUDE.md
 .agents/
 .claude/
+
+# Local-only: agent scratch tracker + local tests
 .scratch/
 
 # ScreenScraper developer credentials, written by the release workflows from GitHub secrets
