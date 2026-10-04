@@ -7,3 +7,5 @@ current.txt
 sync.bat
 spruce/www/services.txt
 CLAUDE.md
+# Local-only: agent scratch tracker + local tests
+.scratch/
