@@ -17,5 +17,8 @@ CLAUDE.md
 # Local-only: agent scratch tracker + local tests
 .scratch/
 
+# local python dev env (uv venv for editor LSP)
+.venv/
+
 # ScreenScraper developer credentials, written by the release workflows from GitHub secrets
 App/PyUI/main-ui/utils/boxart/ss.bin
