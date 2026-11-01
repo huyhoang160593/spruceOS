@@ -23,3 +23,11 @@ _Avoid_: ô lỗi, ký tự rác
 **run**:
 Đoạn ký tự liên tiếp trong một chuỗi được vẽ bằng cùng một font (primary hoặc fallback).
 _Avoid_: đoạn chữ, chunk
+
+**symbol font**:
+Font giao diện dùng chủ đích cho glyph nút và phím, chứ không phải để lấp chỗ font theme còn thiếu.
+_Avoid_: font icon, font thay thế
+
+**symbol run**:
+Đoạn ký tự được vẽ bằng symbol font, trong khi phần còn lại của cùng dòng vẫn theo font purpose của dòng đó.
+_Avoid_: đoạn glyph, ký tự đặc biệt
