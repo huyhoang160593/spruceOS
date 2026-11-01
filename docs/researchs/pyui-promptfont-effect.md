@@ -5,10 +5,9 @@
 Does `App/PyUI/main-ui/utils/promptfont.ttf` ever actually get loaded/rendered
 on a real spruceOS path, or is it dead weight?
 
-Terminology follows `GLOSSARY.md:15-25` (**font fallback**, **tofu**, **run**)
-and the sibling research docs
-`docs/researchs/pyui-keyboard-font-fallback.md` /
-`docs/researchs/pyui-tofu-sweep.md`.
+Terminology follows `GLOSSARY.md:15-33` (**font fallback**, **tofu**, **run**,
+**symbol font**, **symbol run**) and the sibling research doc
+`docs/researchs/pyui-keyboard-font-fallback.md`.
 
 ## Verdict
 
@@ -112,11 +111,10 @@ with enough positional arguments to reach it (`render_text` 10th positional,
   (`display.py:272-277`). So the two `get_fallback_font`s coexist without
   interacting; `theme.py` never consults `PyUiConfig.get_fallback_font`, and
   `display.py` never consults `Theme.get_fallback_font` for the fallback cache.
-- Note (consistent with `docs/researchs/pyui-tofu-sweep.md:77-84`): no
-  `lang/*.json` declares a `fonts` key, so `Theme.get_font`'s language
-  override (`theme.py:529-531`) is itself dormant; the file-level fallback
-  lands on `themes/font.ttf`, which itself lacks `↵` U+21B5
-  (`docs/researchs/pyui-tofu-sweep.md:109`, confirmed by measurement below).
+- Note: no `lang/*.json` declares a `fonts` key, so `Theme.get_font`'s
+  language override (`theme.py:529-531`) is itself dormant; the file-level
+  fallback lands on `themes/font.ttf`, which itself lacks `↵` U+21B5
+  (measured below).
 
 ### 5. Laziness: the fallback file is never even opened
 
@@ -161,10 +159,9 @@ never opened.
 
 ## Glyph coverage findings
 
-Measured with a pure-stdlib `struct` cmap parser (same method as
-`docs/researchs/pyui-tofu-sweep.md`, §1 step 4; no fontTools/PIL available in
-`.venv/` or system Python — verified). Script: `/tmp/opencode/cmap_check.py`
-(local-only, not committed).
+Measured with a pure-stdlib `struct` cmap parser (no fontTools/PIL was
+available in `.venv/` or system Python — verified). Script:
+`/tmp/opencode/cmap_check.py` (local-only, not committed).
 
 | Font | codepoints | `⇪`21EA | `↑`2191 | `←`2190 | `↵`21B5 | `→`2192 | `↓`2193 | `✓`2713 | `·`00B7 | `█`2588 | CJK/Кириллица/emoji |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -174,18 +171,14 @@ Measured with a pure-stdlib `struct` cmap parser (same method as
 
 Reading:
 
-- promptfont covers exactly the keyboard/Konami symbol set
-  (`⇪ ↑ ← ↵ → ↓`) the tofu sweep catalogued as at-risk
-  (`docs/researchs/pyui-tofu-sweep.md:22-50`) — that is clearly *why* an
-  upstream-style symbol font was bundled (also matching ticket
+- promptfont covers exactly the keyboard/Konami symbol set (`⇪ ↑ ← ↵ → ↓`)
+  that decorative and pixel theme fonts tend to miss — that is clearly *why*
+  an upstream-style symbol font was bundled (also matching ticket
   `.scratch/pyui-symbol-fallback/issues/01-bundle-promptfont.md:3`).
 - But it **lacks `✓` U+2713**, the checkmark rendered by Wi-Fi/Bluetooth menus
   (`wifi_menu.py:113`, `bluetooth_menu.py:125`), and lacks all CJK/Cyrillic/
   Greek/emoji — so it could never have been a general fallback anyway;
   `nunwen.ttf` strictly dominates it on every UI-relevant codepoint probed.
-- Consistency check with `docs/researchs/pyui-tofu-sweep.md:110`: nunwen row
-  matches (all-Y except Thai/emoji); `themes/font.ttf` matches its row at
-  `:109` (missing `↵` only).
 
 ## History / intent
 
@@ -238,8 +231,6 @@ Reading:
    copyleft-adjacent files. If the symbol-fallback branches later re-bundle
    it, carry `Licenses/fonts/promptfont.txt` as ticket 01 specified.
 3. If the dormant `allow_fallback_font_for_missing_glyphs` mechanism is ever
-   activated, prefer nunwen (full UI coverage, §Glyph coverage) over promptfont;
-   the repo's own research (`docs/researchs/pyui-tofu-sweep.md:152-163`, S1)
-   already recommends nunwen for per-purpose fallback.
+   activated, prefer nunwen (full UI coverage, §Glyph coverage) over promptfont.
 
 *Investigation only; no code or config was modified. Working tree left clean.*
